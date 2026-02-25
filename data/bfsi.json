@@ -1,0 +1,406 @@
+{
+  "industry": "BFSI",
+  "base_revenue": 1000,
+  "functions": [
+    {
+      "id": "operations",
+      "name": "Operations",
+      "subfunctions": [
+        {
+          "id": "account_opening_kyc",
+          "name": "Account Opening & KYC",
+          "cost_pct_revenue": 0.45,
+          "fte_pct_headcount": 6.5,
+          "unit_cost_per_1000": 4.5,
+          "automation_scores": {
+            "process_repeatability": 1,
+            "data_availability": 2,
+            "regulatory_complexity": 1,
+            "volume_scale": 1
+          }
+        },
+        {
+          "id": "loan_processing",
+          "name": "Loan Processing & Underwriting",
+          "cost_pct_revenue": 1.20,
+          "fte_pct_headcount": 12.0,
+          "unit_cost_per_1000": 11.5,
+          "automation_scores": {
+            "process_repeatability": 3,
+            "data_availability": 4,
+            "regulatory_complexity": 3,
+            "volume_scale": 4
+          }
+        },
+        {
+          "id": "payments_reconciliation",
+          "name": "Payments & Reconciliation",
+          "cost_pct_revenue": 0.35,
+          "fte_pct_headcount": 4.5,
+          "unit_cost_per_1000": 3.2,
+          "automation_scores": {
+            "process_repeatability": 5,
+            "data_availability": 5,
+            "regulatory_complexity": 4,
+            "volume_scale": 5
+          }
+        },
+        {
+          "id": "claims_processing",
+          "name": "Claims Processing",
+          "cost_pct_revenue": 0.60,
+          "fte_pct_headcount": 7.5,
+          "unit_cost_per_1000": 5.8,
+          "automation_scores": {
+            "process_repeatability": 4,
+            "data_availability": 3,
+            "regulatory_complexity": 4,
+            "volume_scale": 4
+          }
+        },
+        {
+          "id": "trade_operations",
+          "name": "Trade Operations",
+          "cost_pct_revenue": 0.42,
+          "fte_pct_headcount": 5.0,
+          "unit_cost_per_1000": 4.0,
+          "automation_scores": {
+            "process_repeatability": 3,
+            "data_availability": 3,
+            "regulatory_complexity": 4,
+            "volume_scale": 3
+          }
+        },
+        {
+          "id": "treasury_ops",
+          "name": "Treasury Operations",
+          "cost_pct_revenue": 0.55,
+          "fte_pct_headcount": 3.0,
+          "unit_cost_per_1000": 5.5,
+          "automation_scores": {
+            "process_repeatability": 3,
+            "data_availability": 4,
+            "regulatory_complexity": 3,
+            "volume_scale": 3
+          }
+        },
+        {
+          "id": "document_management",
+          "name": "Document Management",
+          "cost_pct_revenue": 0.82,
+          "fte_pct_headcount": 8.2,
+          "unit_cost_per_1000": 8.2,
+          "automation_scores": {
+            "process_repeatability": 5,
+            "data_availability": 4,
+            "regulatory_complexity": 2,
+            "volume_scale": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "risk_compliance",
+      "name": "Risk & Compliance",
+      "subfunctions": [
+        {
+          "id": "aml_kyc_monitoring",
+          "name": "AML & KYC Monitoring",
+          "cost_pct_revenue": 1.10,
+          "fte_pct_headcount": 9.0,
+          "unit_cost_per_1000": 10.5,
+          "automation_scores": {
+            "process_repeatability": 4,
+            "data_availability": 4,
+            "regulatory_complexity": 5,
+            "volume_scale": 5
+          }
+        },
+        {
+          "id": "credit_risk",
+          "name": "Credit Risk Assessment",
+          "cost_pct_revenue": 0.70,
+          "fte_pct_headcount": 6.0,
+          "unit_cost_per_1000": 6.8,
+          "automation_scores": {
+            "process_repeatability": 4,
+            "data_availability": 5,
+            "regulatory_complexity": 3,
+            "volume_scale": 4
+          }
+        },
+        {
+          "id": "regulatory_reporting",
+          "name": "Regulatory Reporting",
+          "cost_pct_revenue": 0.85,
+          "fte_pct_headcount": 7.0,
+          "unit_cost_per_1000": 8.2,
+          "automation_scores": {
+            "process_repeatability": 5,
+            "data_availability": 4,
+            "regulatory_complexity": 4,
+            "volume_scale": 4
+          }
+        },
+        {
+          "id": "fraud_detection",
+          "name": "Fraud Detection & Prevention",
+          "cost_pct_revenue": 0.50,
+          "fte_pct_headcount": 5.0,
+          "unit_cost_per_1000": 4.8,
+          "automation_scores": {
+            "process_repeatability": 4,
+            "data_availability": 5,
+            "regulatory_complexity": 3,
+            "volume_scale": 5
+          }
+        },
+        {
+          "id": "market_risk",
+          "name": "Market Risk Monitoring",
+          "cost_pct_revenue": 0.40,
+          "fte_pct_headcount": 3.5,
+          "unit_cost_per_1000": 3.8,
+          "automation_scores": {
+            "process_repeatability": 3,
+            "data_availability": 4,
+            "regulatory_complexity": 4,
+            "volume_scale": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "customer_service",
+      "name": "Customer Service",
+      "subfunctions": [
+        {
+          "id": "contact_centre",
+          "name": "Contact Centre Operations",
+          "cost_pct_revenue": 1.50,
+          "fte_pct_headcount": 18.0,
+          "unit_cost_per_1000": 14.5,
+          "automation_scores": {
+            "process_repeatability": 5,
+            "data_availability": 4,
+            "regulatory_complexity": 2,
+            "volume_scale": 5
+          }
+        },
+        {
+          "id": "complaints_management",
+          "name": "Complaints Management",
+          "cost_pct_revenue": 0.45,
+          "fte_pct_headcount": 5.0,
+          "unit_cost_per_1000": 4.3,
+          "automation_scores": {
+            "process_repeatability": 3,
+            "data_availability": 3,
+            "regulatory_complexity": 4,
+            "volume_scale": 4
+          }
+        },
+        {
+          "id": "onboarding_cx",
+          "name": "Customer Onboarding Experience",
+          "cost_pct_revenue": 0.55,
+          "fte_pct_headcount": 6.0,
+          "unit_cost_per_1000": 5.2,
+          "automation_scores": {
+            "process_repeatability": 4,
+            "data_availability": 4,
+            "regulatory_complexity": 2,
+            "volume_scale": 4
+          }
+        },
+        {
+          "id": "collections",
+          "name": "Collections & Recovery",
+          "cost_pct_revenue": 0.80,
+          "fte_pct_headcount": 8.0,
+          "unit_cost_per_1000": 7.6,
+          "automation_scores": {
+            "process_repeatability": 4,
+            "data_availability": 4,
+            "regulatory_complexity": 3,
+            "volume_scale": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "finance_accounting",
+      "name": "Finance & Accounting",
+      "subfunctions": [
+        {
+          "id": "accounts_payable",
+          "name": "Accounts Payable",
+          "cost_pct_revenue": 0.38,
+          "fte_pct_headcount": 4.0,
+          "unit_cost_per_1000": 3.6,
+          "automation_scores": {
+            "process_repeatability": 5,
+            "data_availability": 5,
+            "regulatory_complexity": 2,
+            "volume_scale": 5
+          }
+        },
+        {
+          "id": "financial_reporting",
+          "name": "Financial Reporting & Close",
+          "cost_pct_revenue": 0.60,
+          "fte_pct_headcount": 5.5,
+          "unit_cost_per_1000": 5.7,
+          "automation_scores": {
+            "process_repeatability": 4,
+            "data_availability": 4,
+            "regulatory_complexity": 4,
+            "volume_scale": 3
+          }
+        },
+        {
+          "id": "tax_compliance",
+          "name": "Tax & Statutory Compliance",
+          "cost_pct_revenue": 0.35,
+          "fte_pct_headcount": 3.0,
+          "unit_cost_per_1000": 3.3,
+          "automation_scores": {
+            "process_repeatability": 4,
+            "data_availability": 3,
+            "regulatory_complexity": 5,
+            "volume_scale": 3
+          }
+        },
+        {
+          "id": "management_reporting",
+          "name": "Management Reporting & MI",
+          "cost_pct_revenue": 0.42,
+          "fte_pct_headcount": 4.0,
+          "unit_cost_per_1000": 4.0,
+          "automation_scores": {
+            "process_repeatability": 5,
+            "data_availability": 5,
+            "regulatory_complexity": 1,
+            "volume_scale": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "hr",
+      "name": "Human Resources",
+      "subfunctions": [
+        {
+          "id": "recruitment",
+          "name": "Recruitment & Talent Acquisition",
+          "cost_pct_revenue": 0.45,
+          "fte_pct_headcount": 4.0,
+          "unit_cost_per_1000": 4.2,
+          "automation_scores": {
+            "process_repeatability": 4,
+            "data_availability": 4,
+            "regulatory_complexity": 2,
+            "volume_scale": 4
+          }
+        },
+        {
+          "id": "payroll",
+          "name": "Payroll Processing",
+          "cost_pct_revenue": 0.30,
+          "fte_pct_headcount": 2.5,
+          "unit_cost_per_1000": 2.8,
+          "automation_scores": {
+            "process_repeatability": 5,
+            "data_availability": 5,
+            "regulatory_complexity": 3,
+            "volume_scale": 4
+          }
+        },
+        {
+          "id": "l_and_d",
+          "name": "Learning & Development",
+          "cost_pct_revenue": 0.28,
+          "fte_pct_headcount": 2.0,
+          "unit_cost_per_1000": 2.5,
+          "automation_scores": {
+            "process_repeatability": 3,
+            "data_availability": 3,
+            "regulatory_complexity": 1,
+            "volume_scale": 3
+          }
+        },
+        {
+          "id": "hr_operations",
+          "name": "HR Operations & Helpdesk",
+          "cost_pct_revenue": 0.35,
+          "fte_pct_headcount": 3.5,
+          "unit_cost_per_1000": 3.3,
+          "automation_scores": {
+            "process_repeatability": 5,
+            "data_availability": 4,
+            "regulatory_complexity": 1,
+            "volume_scale": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "it_infra",
+      "name": "IT & Infrastructure",
+      "subfunctions": [
+        {
+          "id": "it_helpdesk",
+          "name": "IT Helpdesk & Support",
+          "cost_pct_revenue": 0.60,
+          "fte_pct_headcount": 5.5,
+          "unit_cost_per_1000": 5.7,
+          "automation_scores": {
+            "process_repeatability": 5,
+            "data_availability": 4,
+            "regulatory_complexity": 1,
+            "volume_scale": 5
+          }
+        },
+        {
+          "id": "cyber_security",
+          "name": "Cyber Security Operations",
+          "cost_pct_revenue": 0.90,
+          "fte_pct_headcount": 7.0,
+          "unit_cost_per_1000": 8.5,
+          "automation_scores": {
+            "process_repeatability": 4,
+            "data_availability": 5,
+            "regulatory_complexity": 3,
+            "volume_scale": 5
+          }
+        },
+        {
+          "id": "infra_monitoring",
+          "name": "Infrastructure Monitoring",
+          "cost_pct_revenue": 0.45,
+          "fte_pct_headcount": 4.0,
+          "unit_cost_per_1000": 4.3,
+          "automation_scores": {
+            "process_repeatability": 5,
+            "data_availability": 5,
+            "regulatory_complexity": 1,
+            "volume_scale": 5
+          }
+        },
+        {
+          "id": "data_management",
+          "name": "Data Management & Governance",
+          "cost_pct_revenue": 0.55,
+          "fte_pct_headcount": 5.0,
+          "unit_cost_per_1000": 5.2,
+          "automation_scores": {
+            "process_repeatability": 4,
+            "data_availability": 4,
+            "regulatory_complexity": 3,
+            "volume_scale": 4
+          }
+        }
+      ]
+    }
+  ]
+}
