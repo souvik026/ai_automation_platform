@@ -57,14 +57,16 @@ class DataLoader:
         return sorted(df[cls.COL_INDUSTRY].dropna().unique().tolist())
 
     @classmethod
-    def load_industry(cls, industry: str) -> dict:
+    def load_industry(cls, industry: str, revenue_m: float = None) -> dict:
         """
         Returns industry data in the same structure the app expects.
+        If revenue_m is provided (company revenue in M USD), computes
+        absolute_cost_m = cost_pct_revenue * revenue_m / 100 for each subfunction.
 
         # FUTURE INTEGRATION POINT: replace _load_excel() with API call
         # df = requests.get(f"/api/data?industry={industry}").json()
         """
-        cache_key = industry.lower()
+        cache_key = f"{industry.lower()}_{revenue_m}"
         if cache_key in cls._cache:
             return cls._cache[cache_key]
 
@@ -82,11 +84,14 @@ class DataLoader:
                 cost = float(row[cls.COL_COST])
                 role = str(row.get(cls.COL_ROLE, "")).strip()
 
+                absolute_cost_m = round(cost * revenue_m / 100, 2) if revenue_m else None
+
                 subfunctions.append({
                     "id": cls._to_id(l2_name),
                     "name": l2_name,
                     "unit_cost_per_1000": cost,
                     "cost_pct_revenue": cost,
+                    "absolute_cost_m": absolute_cost_m,
                     "fte_pct_headcount": 0.0,
                     "automation_score": score,
                     "role_description": role,
@@ -99,21 +104,21 @@ class DataLoader:
                 "subfunctions": subfunctions,
             })
 
-        result = {"industry": industry, "functions": functions}
+        result = {"industry": industry, "functions": functions, "revenue_m": revenue_m}
         cls._cache[cache_key] = result
         return result
 
     @classmethod
-    def get_function(cls, industry: str, function_id: str) -> dict:
-        data = cls.load_industry(industry)
+    def get_function(cls, industry: str, function_id: str, revenue_m: float = None) -> dict:
+        data = cls.load_industry(industry, revenue_m=revenue_m)
         return next(
             (f for f in data["functions"] if f["id"] == function_id),
             None
         )
 
     @classmethod
-    def get_subfunction(cls, industry: str, function_id: str, subfunction_id: str) -> dict:
-        function = cls.get_function(industry, function_id)
+    def get_subfunction(cls, industry: str, function_id: str, subfunction_id: str, revenue_m: float = None) -> dict:
+        function = cls.get_function(industry, function_id, revenue_m=revenue_m)
         if not function:
             return None
         return next(

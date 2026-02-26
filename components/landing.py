@@ -77,6 +77,21 @@ def landing_layout():
                                     ),
                                 ]
                             ),
+                            html.Div(
+                                className="form-group",
+                                children=[
+                                    html.Label("Company Annual Revenue (M USD) — Optional", className="form-label"),
+                                    dcc.Input(
+                                        id="revenue-input",
+                                        type="number",
+                                        placeholder="e.g. 5000 for $5B revenue...",
+                                        className="form-input",
+                                        min=1,
+                                        debounce=False,
+                                        style={"fontSize": "16px", "padding": "14px 18px", "height": "52px"},
+                                    ),
+                                ]
+                            ),
                             html.Div(id="landing-error", className="form-error"),
                             html.Button(
                                 children=[
@@ -106,12 +121,16 @@ def landing_layout():
     Input("explore-btn", "n_clicks"),
     State("company-input", "value"),
     State("industry-dropdown", "value"),
+    State("revenue-input", "value"),
     prevent_initial_call=True,
 )
-def handle_explore(n_clicks, company, industry):
+def handle_explore(n_clicks, company, industry, revenue):
     if not company or not company.strip():
         return dash.no_update, "⚠ Please enter a client company name."
     if not industry:
         return dash.no_update, "⚠ Please select an industry."
     safe_company = company.strip().replace(" ", "+")
-    return f"/treemap?company={safe_company}&industry={industry}", ""
+    url = f"/treemap?company={safe_company}&industry={industry}"
+    if revenue and float(revenue) > 0:
+        url += f"&revenue={revenue}"
+    return url, ""

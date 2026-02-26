@@ -1050,3 +1050,698 @@
    }
    
    .footer-hint { color: var(--accent-teal); }
+
+/* ─── Layout: treemap + right panel ─── */
+.treemap-with-panel {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 64px);
+    overflow: hidden;
+}
+
+.treemap-main-col {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.treemap-main-col .treemap-graph {
+    flex: 1;
+    min-height: 0;
+}
+
+/* ─── Right insight panel ─── */
+.right-insight-panel {
+    width: 280px;
+    flex-shrink: 0;
+    background: #111f38;
+    border-left: 1px solid #1e3355;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ─── Tabs ─── */
+.insight-tabs {
+    display: flex;
+    border-bottom: 1px solid #1e3355;
+    flex-shrink: 0;
+}
+
+.insight-tab {
+    flex: 1;
+    padding: 12px 0;
+    background: transparent;
+    border: none;
+    color: #556888;
+    font-family: "DM Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s, border-bottom 0.2s;
+    border-bottom: 2px solid transparent;
+}
+
+.insight-tab:hover {
+    color: #8899BB;
+}
+
+.insight-tab-active {
+    color: #F0F4FF;
+    border-bottom: 2px solid #0066FF;
+}
+
+/* ─── Tab body ─── */
+.insight-tab-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+    scrollbar-width: thin;
+    scrollbar-color: #1e3355 transparent;
+}
+
+.insight-tab-body::-webkit-scrollbar { width: 4px; }
+.insight-tab-body::-webkit-scrollbar-track { background: transparent; }
+.insight-tab-body::-webkit-scrollbar-thumb { background: #1e3355; border-radius: 2px; }
+
+.insight-loading {
+    padding: 24px 16px;
+    color: #556888;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* ─── Insights content ─── */
+.insights-content {
+    padding: 14px 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.insights-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.insights-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8899BB;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.insights-section-badge {
+    font-size: 10px;
+    color: #556888;
+    background: #0f1c32;
+    padding: 2px 7px;
+    border-radius: 10px;
+    border: 1px solid #1e3355;
+}
+
+/* ─── Callout cards ─── */
+.insight-callouts {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.insight-callout-card {
+    flex: 1;
+    background: #0f1c32;
+    border: 1px solid #1e3355;
+    border-radius: 8px;
+    padding: 10px 10px 8px;
+    min-width: 0;
+}
+
+.callout-label {
+    font-size: 9px;
+    color: #556888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.callout-value {
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.callout-sub {
+    font-size: 9px;
+    color: #556888;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ─── Chart ─── */
+.insights-chart {
+    margin: 0 -4px;
+}
+
+/* ─── Opportunities list ─── */
+.opportunities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.opportunity-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #0f1c32;
+    border: 1px solid #1e3355;
+    border-radius: 7px;
+    padding: 8px 10px;
+}
+
+.opp-rank {
+    font-size: 11px;
+    font-weight: 700;
+    color: #556888;
+    width: 16px;
+    flex-shrink: 0;
+}
+
+.opp-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.opp-name {
+    font-size: 12px;
+    color: #F0F4FF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.opp-cost {
+    font-size: 10px;
+    color: #556888;
+    margin-top: 1px;
+}
+
+.opp-score-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    padding: 3px 7px;
+    border-radius: 5px;
+    flex-shrink: 0;
+}
+
+/* ─── Insights divider ─── */
+.insights-divider {
+    height: 1px;
+    background: #1e3355;
+    margin: 8px 0;
+}
+
+/* ─── SF detail block (selected subfunction) ─── */
+.sf-detail-block {
+    background: #0f1c32;
+    border: 1px solid #1e3355;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sf-detail-score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sf-detail-label {
+    font-size: 11px;
+    color: #8899BB;
+}
+
+.sf-detail-score {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.sf-detail-metrics {
+    display: flex;
+    gap: 8px;
+}
+
+.sf-detail-opportunities {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* ─── Ask AI content ─── */
+.ask-ai-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 10px 12px 12px;
+    gap: 10px;
+}
+
+.ask-ai-context-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    background: #0f1c32;
+    border-radius: 7px;
+    border: 1px solid #1e3355;
+}
+
+.ask-ai-icon {
+    color: #0066FF;
+    font-size: 13px;
+}
+
+.ask-ai-context-text {
+    flex: 1;
+    font-size: 11px;
+    color: #8899BB;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ask-ai-messages {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 120px;
+    max-height: 260px;
+    scrollbar-width: thin;
+    scrollbar-color: #1e3355 transparent;
+}
+
+.ask-ai-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ask-ai-input-row {
+    display: flex;
+    gap: 6px;
+}
+
+.ask-ai-input {
+    flex: 1;
+    background: #0f1c32;
+    border: 1px solid #1e3355;
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: #F0F4FF;
+    font-size: 12px;
+    font-family: "DM Sans", sans-serif;
+    outline: none;
+}
+
+.ask-ai-input:focus {
+    border-color: #0066FF;
+}
+
+.ask-ai-send-btn {
+    background: #0066FF;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ask-ai-send-btn:hover {
+    background: #0052cc;
+}
+
+/* ─── Footnote ─── */
+.insights-footnote {
+    font-size: 10px;
+    color: #556888;
+    text-align: center;
+    margin-top: 8px;
+    font-style: italic;
+}
+/* ═══════════════════════════════════════════════════════════════
+   RIGHT INSIGHT PANEL — treemap + subfunction pages
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Override the default full-height treemap-graph when inside the new layout */
+.treemap-with-panel {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.treemap-main-col {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0 1rem 1.5rem;
+}
+
+/* Override the global min-height when inside our panel layout */
+.treemap-main-col .treemap-graph {
+    flex: 1;
+    min-height: 0 !important;
+    height: 100% !important;
+}
+
+/* ── Right panel ── */
+.right-insight-panel {
+    width: 280px;
+    flex-shrink: 0;
+    background: #111f38;
+    border-left: 1px solid #1e3355;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ── Tabs ── */
+.insight-tabs {
+    display: flex;
+    border-bottom: 1px solid #1e3355;
+    flex-shrink: 0;
+}
+
+.insight-tab {
+    flex: 1;
+    padding: 12px 0;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #556888;
+    font-family: "DM Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.insight-tab:hover { color: #8899BB; }
+
+.insight-tab-active {
+    color: #F0F4FF;
+    border-bottom: 2px solid #0066FF;
+}
+
+/* ── Tab body ── */
+.insight-tab-body {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #1e3355 transparent;
+}
+
+.insight-tab-body::-webkit-scrollbar { width: 4px; }
+.insight-tab-body::-webkit-scrollbar-thumb { background: #1e3355; border-radius: 2px; }
+
+.insight-loading {
+    padding: 24px 16px;
+    color: #556888;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* ── Insights content ── */
+.insights-content {
+    padding: 14px 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.insights-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.insights-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8899BB;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.insights-section-badge {
+    font-size: 10px;
+    color: #556888;
+    background: #0f1c32;
+    padding: 2px 7px;
+    border-radius: 10px;
+    border: 1px solid #1e3355;
+}
+
+/* ── Callout cards ── */
+.insight-callouts {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.insight-callout-card {
+    flex: 1;
+    background: #0f1c32;
+    border: 1px solid #1e3355;
+    border-radius: 8px;
+    padding: 10px 10px 8px;
+    min-width: 0;
+}
+
+.callout-label {
+    font-size: 9px;
+    color: #556888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.callout-value {
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.callout-sub {
+    font-size: 9px;
+    color: #556888;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Chart ── */
+.insights-chart { margin: 0 -4px; }
+
+/* ── Opportunities list ── */
+.opportunities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.opportunity-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #0f1c32;
+    border: 1px solid #1e3355;
+    border-radius: 7px;
+    padding: 8px 10px;
+}
+
+.opp-rank { font-size: 11px; font-weight: 700; color: #556888; width: 16px; flex-shrink: 0; }
+.opp-details { flex: 1; min-width: 0; }
+.opp-name { font-size: 12px; color: #F0F4FF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.opp-cost { font-size: 10px; color: #556888; margin-top: 1px; }
+.opp-score-badge { font-size: 11px; font-weight: 700; color: white; padding: 3px 7px; border-radius: 5px; flex-shrink: 0; }
+
+/* ── Divider ── */
+.insights-divider { height: 1px; background: #1e3355; margin: 8px 0; }
+
+/* ── SF detail block ── */
+.sf-detail-block {
+    background: #0f1c32;
+    border: 1px solid #1e3355;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sf-detail-score-row { display: flex; justify-content: space-between; align-items: center; }
+.sf-detail-label { font-size: 11px; color: #8899BB; }
+.sf-detail-score { font-size: 16px; font-weight: 700; }
+.sf-detail-metrics { display: flex; gap: 8px; }
+.sf-detail-opportunities { display: flex; flex-direction: column; gap: 4px; }
+
+/* ── Ask AI ── */
+.ask-ai-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 10px 12px 12px;
+    gap: 10px;
+}
+
+.ask-ai-context-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    background: #0f1c32;
+    border-radius: 7px;
+    border: 1px solid #1e3355;
+}
+
+.ask-ai-icon { color: #0066FF; font-size: 13px; }
+.ask-ai-context-text { flex: 1; font-size: 11px; color: #8899BB; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.ask-ai-messages {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 120px;
+    max-height: 260px;
+    scrollbar-width: thin;
+    scrollbar-color: #1e3355 transparent;
+}
+
+.ask-ai-chips { display: flex; flex-direction: column; gap: 5px; }
+
+.ask-ai-input-row { display: flex; gap: 6px; }
+
+.ask-ai-input {
+    flex: 1;
+    background: #0f1c32;
+    border: 1px solid #1e3355;
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: #F0F4FF;
+    font-size: 12px;
+    font-family: "DM Sans", sans-serif;
+    outline: none;
+}
+
+.ask-ai-input:focus { border-color: #0066FF; }
+
+.ask-ai-send-btn {
+    background: #0066FF;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.ask-ai-send-btn:hover { background: #0052cc; }
+
+.insights-footnote {
+    font-size: 10px;
+    color: #556888;
+    text-align: center;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+/* ── SF detail view additions ── */
+.sf-detail-back-hint {
+    font-size: 11px;
+    color: #556888;
+    margin-bottom: 8px;
+}
+
+.sf-score-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0;
+}
+
+.sf-score-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sf-score-big {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.sf-score-denom {
+    font-size: 11px;
+    color: #556888;
+}
+
+.sf-score-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sf-role-description {
+    font-size: 12px;
+    color: #8899BB;
+    line-height: 1.5;
+    background: #0f1c32;
+    border: 1px solid #1e3355;
+    border-radius: 7px;
+    padding: 10px 12px;
+}
+
+.sf-detail-opportunities {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}

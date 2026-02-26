@@ -18,7 +18,9 @@ class AutomationCalculator:
 
     @staticmethod
     def get_function_unit_cost(function: dict) -> float:
-        """Sum of all subfunctions' unit_cost_per_1000."""
+        """Sum of subfunctions' absolute_cost_m if available, else cost_pct_revenue."""
+        if function["subfunctions"] and function["subfunctions"][0].get("absolute_cost_m") is not None:
+            return sum(sf["absolute_cost_m"] for sf in function["subfunctions"])
         return sum(sf["unit_cost_per_1000"] for sf in function["subfunctions"])
 
     @staticmethod
@@ -38,6 +40,9 @@ class AutomationCalculator:
         ]
         ColorMapper.calibrate(all_scores)
 
+        revenue_m = industry_data.get("revenue_m")
+        has_revenue = revenue_m is not None
+
         labels, parents, values, colors, customdata = [], [], [], [], []
         industry_name = industry_data["industry"]
 
@@ -45,7 +50,7 @@ class AutomationCalculator:
         parents.append("")
         values.append(0)
         colors.append("#132038")
-        customdata.append([0, "", 0, ""])
+        customdata.append([0, "", 0, "", 0, 0])  # [score, label, sf_count, id, cost_pct, abs_cost_m]
 
         for func in industry_data["functions"]:
             unit_cost = AutomationCalculator.get_function_unit_cost(func)
@@ -53,12 +58,14 @@ class AutomationCalculator:
             color = ColorMapper.get_color(score)
             label = ColorMapper.get_label(score)
             sf_count = len(func["subfunctions"])
+            cost_pct = sum(sf["cost_pct_revenue"] for sf in func["subfunctions"])
+            abs_cost_m = sum(sf["absolute_cost_m"] for sf in func["subfunctions"]) if has_revenue else 0
 
             labels.append(func["name"])
             parents.append(industry_name)
             values.append(unit_cost)
             colors.append(color)
-            customdata.append([round(score, 2), label, sf_count, func["id"]])
+            customdata.append([round(score, 2), label, sf_count, func["id"], round(cost_pct, 2), round(abs_cost_m, 1)])
 
         return {
             "labels": labels,
@@ -66,13 +73,17 @@ class AutomationCalculator:
             "values": values,
             "colors": colors,
             "customdata": customdata,
+            "has_revenue": has_revenue,
+            "revenue_m": revenue_m,
         }
 
     @staticmethod
-    def build_subfunction_treemap_data(function: dict) -> dict:
+    def build_subfunction_treemap_data(function: dict, revenue_m: float = None) -> dict:
         # Calibrate gradient to scores within this function
         all_scores = [sf["automation_score"] for sf in function["subfunctions"]]
         ColorMapper.calibrate(all_scores)
+
+        has_revenue = revenue_m is not None
 
         labels, parents, values, colors, customdata = [], [], [], [], []
         func_name = function["name"]
@@ -81,16 +92,18 @@ class AutomationCalculator:
         parents.append("")
         values.append(0)
         colors.append("#132038")
-        customdata.append([0, "", 0, 0, ""])
+        customdata.append([0, "", 0, 0, "", 0])  # [score, label, fte, cost_pct, id, abs_cost_m]
 
         for sf in function["subfunctions"]:
             score = sf["automation_score"]
             color = ColorMapper.get_color(score)
             label = ColorMapper.get_label(score)
+            abs_cost_m = sf.get("absolute_cost_m") or 0
+            size_value = abs_cost_m if has_revenue else sf["unit_cost_per_1000"]
 
             labels.append(sf["name"])
             parents.append(func_name)
-            values.append(sf["unit_cost_per_1000"])
+            values.append(size_value)
             colors.append(color)
             customdata.append([
                 round(score, 2),
@@ -98,6 +111,7 @@ class AutomationCalculator:
                 sf.get("fte_pct_headcount", 0),
                 sf.get("cost_pct_revenue", 0),
                 sf["id"],
+                round(abs_cost_m, 1),
             ])
 
         return {
@@ -106,4 +120,5 @@ class AutomationCalculator:
             "values": values,
             "colors": colors,
             "customdata": customdata,
+            "has_revenue": has_revenue,
         }
