@@ -1,14 +1,14 @@
 from dash import html, dcc, Input, Output, State, callback
 import dash
+from utils.data_loader import DataLoader
 
 
-INDUSTRIES = [
-    {"label": "BFSI — Banking, Financial Services & Insurance", "value": "bfsi"},
-    {"label": "Pharma & Life Sciences (Coming Soon)", "value": "pharma", "disabled": True},
-    {"label": "BPO & Shared Services (Coming Soon)", "value": "bpo", "disabled": True},
-    {"label": "Retail & Consumer Goods (Coming Soon)", "value": "retail", "disabled": True},
-    {"label": "Telecom (Coming Soon)", "value": "telecom", "disabled": True},
-]
+def _get_industry_options():
+    try:
+        available = DataLoader.get_available_industries()
+        return [{"label": ind, "value": ind} for ind in available]
+    except Exception:
+        return [{"label": "Banking", "value": "Banking"}]
 
 
 def landing_layout():
@@ -18,7 +18,6 @@ def landing_layout():
             html.Div(className="bg-orb orb-1"),
             html.Div(className="bg-orb orb-2"),
             html.Div(className="bg-orb orb-3"),
-
             html.Div(
                 className="landing-content",
                 children=[
@@ -30,8 +29,7 @@ def landing_layout():
                             html.Span("Straive AI Practice", className="badge-text"),
                         ]
                     ),
-
-                    # Main title — updated name
+                    # Main title
                     html.H1(
                         children=[
                             html.Span("Automation", className="title-accent"),
@@ -40,14 +38,11 @@ def landing_layout():
                         ],
                         className="landing-title"
                     ),
-
                     html.P(
                         "Identify AI Automation Opportunities Across Industry Functions",
                         className="landing-tagline"
                     ),
-
                     html.Div(className="landing-divider"),
-
                     # Form card
                     html.Div(
                         className="landing-form-card",
@@ -66,14 +61,13 @@ def landing_layout():
                                     ),
                                 ]
                             ),
-
                             html.Div(
                                 className="form-group",
                                 children=[
                                     html.Label("Industry", className="form-label"),
                                     dcc.Dropdown(
                                         id="industry-dropdown",
-                                        options=INDUSTRIES,
+                                        options=_get_industry_options(),
                                         value=None,
                                         placeholder="Select industry...",
                                         clearable=False,
@@ -83,9 +77,7 @@ def landing_layout():
                                     ),
                                 ]
                             ),
-
                             html.Div(id="landing-error", className="form-error"),
-
                             html.Button(
                                 children=[
                                     html.Span("Explore Automation Opportunities"),
@@ -97,14 +89,12 @@ def landing_layout():
                             ),
                         ]
                     ),
-
                     html.P(
-                        "Currently supporting BFSI. More industries launching Q3 2026.",
+                        "Industries loaded from backend_data.xlsx",
                         className="landing-footnote"
                     ),
                 ]
             ),
-
             dcc.Location(id="landing-redirect", refresh=True),
         ]
     )

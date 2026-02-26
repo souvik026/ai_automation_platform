@@ -17,10 +17,9 @@ def build_treemap_figure(industry_data: dict) -> go.Figure:
             text_labels.append("")
         else:
             text_labels.append(
-                f"<b>{label}</b><br>"
-                f"<span style='font-size:11px'>{cd[1]} Potential</span><br>"
-                f"<span style='font-size:13px'>{cd[0]}/20</span>"
-            )
+            f"<b>{label}</b><br>"
+            f"<span style='font-size:12px'>{cd[1]} Potential</span>"
+)
 
     fig = go.Figure(go.Treemap(
         labels=data["labels"],
@@ -37,12 +36,11 @@ def build_treemap_figure(industry_data: dict) -> go.Figure:
         ),
         hovertemplate=(
             "<b>%{label}</b><br>"
-            "Unit Cost / $1,000 Revenue: $%{value:.1f}<br>"
+            "Cost as % Revenue: %{value:.2f}%<br>"
             "Automation Potential: %{customdata[1]}<br>"
-            "Score: %{customdata[0]}/20<br>"
             "Subfunctions: %{customdata[2]}<br>"
             "<extra></extra>"
-        ),
+),
         textfont=dict(size=14, color="white", family="DM Sans"),
         textposition="middle center",
         tiling=dict(packing="squarify", pad=6),

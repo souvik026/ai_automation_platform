@@ -1,66 +1,86 @@
 class ColorMapper:
     """
-    All color and label logic lives here only.
-    Colors use smooth gradient interpolation: green (low score) -> red (high score).
-    High automation score = high automation POTENTIAL = more urgent/valuable = red end.
+    Score scale: 1 to 5
+    Below 1.8        : Grey (minimal automation potential)
+    1.8 and above    : Green gradient from light to dark
+                       min score in dataset = lightest green
+                       max score in dataset = darkest green
+    No scores shown in UI — labels only.
     """
 
-    # Score bands for labels only (colors are now interpolated)
-    SCORE_BANDS = [
-        (18, 20, "Very High"),
-        (14, 17, "High"),
-        (9,  13, "Medium"),
-        (0,   8, "Lower"),
+    GREY = "#7F8C8D"
+
+    # Green gradient stops (score 1.8 = light, 5.0 = dark)
+    GRADIENT_GREEN = [
+        (1.8, 144, 238, 144),  # light green
+        (2.5, 88,  196, 98),   # mid-light green
+        (3.5, 55,  180, 90),   # mid green
+        (4.5, 33,  160, 75),   # mid-dark green
+        (5.0, 27,  142, 68),   # deep green
     ]
 
-    # Gradient stops: score 0 = green, score 20 = red
-    # Format: (score, R, G, B)
-    GRADIENT = [
-    (0,  180, 30,  20),   # deep red   (lowest automation)
-    (3,  192, 57,  43),   # red-orange
-    (6,  230, 126, 34),   # orange
-    (11, 241, 196, 15),   # yellow
-    (14, 88,  196, 98),   # mid-green
-    (20, 39,  174, 96),   # green      (highest automation)
-]
+    # These get set dynamically per dataset
+    _score_min = 1.8
+    _score_max = 5.0
 
     @classmethod
-    def _interpolate(cls, score: float) -> tuple:
-        """Interpolates RGB values along the gradient for a given score (0-20)."""
-        score = max(0, min(20, score))
-        for i in range(len(cls.GRADIENT) - 1):
-            s0, r0, g0, b0 = cls.GRADIENT[i]
-            s1, r1, g1, b1 = cls.GRADIENT[i + 1]
-            if s0 <= score <= s1:
-                t = (score - s0) / (s1 - s0) if s1 != s0 else 0
-                r = int(r0 + t * (r1 - r0))
-                g = int(g0 + t * (g1 - g0))
-                b = int(b0 + t * (b1 - b0))
-                return (r, g, b)
-        return (180, 30, 20)
+    def calibrate(cls, all_scores: list):
+        """
+        Call this once after loading data, passing all
+        automation scores in the dataset. Sets the min/max
+        so the gradient stretches across the actual data range.
+        """
+        valid = [s for s in all_scores if s >= 1.8]
+        if valid:
+            cls._score_min = min(valid)
+            cls._score_max = max(valid)
+            # Avoid divide by zero if all scores are equal
+            if cls._score_min == cls._score_max:
+                cls._score_max = cls._score_min + 0.1
 
     @classmethod
     def get_color(cls, score: float) -> str:
-        """Returns smooth gradient hex color for a given automation score."""
-        r, g, b = cls._interpolate(score)
-        return f"#{r:02X}{g:02X}{b:02X}"
+        if score < 1.8:
+            return cls.GREY
+
+        # Normalise score to 0-1 within actual data range
+        t = (score - cls._score_min) / (cls._score_max - cls._score_min)
+        t = max(0.0, min(1.0, t))
+
+        # Map t across green gradient stops
+        g = cls.GRADIENT_GREEN
+        # Use t to interpolate across the full gradient
+        scaled = t * (len(g) - 1)
+        idx = int(scaled)
+        idx = min(idx, len(g) - 2)
+        local_t = scaled - idx
+
+        _, r0, g0, b0 = g[idx]
+        _, r1, g1, b1 = g[idx + 1]
+
+        r = int(r0 + local_t * (r1 - r0))
+        gv = int(g0 + local_t * (g1 - g0))
+        b = int(b0 + local_t * (b1 - b0))
+        return f"#{r:02X}{gv:02X}{b:02X}"
 
     @classmethod
     def get_label(cls, score: float) -> str:
-        """Returns human-readable potential label for a score."""
-        for low, high, label in cls.SCORE_BANDS:
-            if low <= score <= high:
-                return label
-        return "Lower"
+        if score < 1.8:
+            return "Minimal"
+        if score < 2.5:
+            return "Low"
+        if score < 3.5:
+            return "Medium"
+        if score < 4.5:
+            return "High"
+        return "Very High"
 
     @classmethod
     def get_legend(cls) -> list:
-        """Returns gradient legend stops for rendering in UI."""
-        stops = [
-            (0,  "Low"),
-            (5,  ""),
-            (10, "Medium"),
-            (15, ""),
-            (20, "Very High"),
+        return [
+            {"color": cls.GREY,      "label": "Minimal"},
+            {"color": "#90EE90",     "label": "Low"},
+            {"color": "#58C462",     "label": "Medium"},
+            {"color": "#37B05A",     "label": "High"},
+            {"color": "#1B8E44",     "label": "Very High"},
         ]
-        return [{"color": cls.get_color(s), "label": l, "score": s} for s, l in stops]
