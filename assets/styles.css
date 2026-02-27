@@ -1745,3 +1745,290 @@
     flex-direction: column;
     gap: 6px;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   L3 BREAKDOWN PAGE — card grid
+   ═══════════════════════════════════════════════════════════════ */
+
+.l3-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    align-content: start;
+}
+
+.l3-card {
+    background: #111f38;
+    border: 1px solid #1e3355;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.l3-card:hover {
+    border-color: #0066FF;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 102, 255, 0.15);
+}
+
+.l3-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.l3-card-index {
+    font-size: 11px;
+    font-weight: 700;
+    color: #556888;
+    background: #0f1c32;
+    border: 1px solid #1e3355;
+    border-radius: 5px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    font-family: "DM Sans", monospace;
+}
+
+.l3-card-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: #F0F4FF;
+    line-height: 1.3;
+}
+
+.l3-card-score-badge {
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    padding: 3px 9px;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.l3-card-desc {
+    font-size: 12px;
+    color: #8899BB;
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.l3-card-dims {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.l3-dim-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.l3-dim-label {
+    font-size: 10px;
+    color: #556888;
+    width: 52px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.l3-dim-bar-track {
+    flex: 1;
+    height: 4px;
+    background: #1e3355;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.l3-dim-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.l3-dim-score {
+    font-size: 10px;
+    color: #556888;
+    width: 14px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.l3-card-footer {
+    font-size: 11px;
+    color: #8899BB;
+    padding-top: 6px;
+    border-top: 1px solid #1e3355;
+}
+
+.l3-card-potential {
+    color: #8899BB;
+}
+
+/* ── L3 Panel ── */
+.l3-panel-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px;
+    gap: 12px;
+}
+
+.l3-dim-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.l3-dim-detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.l3-dim-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.l3-dim-detail-name {
+    font-size: 11px;
+    color: #8899BB;
+}
+
+.l3-dim-detail-score {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.l3-dim-detail-label {
+    font-size: 10px;
+    color: #556888;
+    font-style: italic;
+}
+
+/* ── L3 Use Cases ── */
+.l3-use-cases {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.l3-use-case-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: #0f1c32;
+    border: 1px solid #1e3355;
+    border-radius: 7px;
+    padding: 9px 11px;
+}
+
+.l3-uc-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0066FF;
+    flex-shrink: 0;
+    width: 16px;
+}
+
+.l3-uc-text {
+    font-size: 12px;
+    color: #8899BB;
+    line-height: 1.4;
+}
+
+/* ── L3 card redesign ── */
+.l3-potential-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.l3-potential-high {
+    background: rgba(39, 174, 96, 0.15);
+    color: #27AE60;
+    border: 1px solid rgba(39, 174, 96, 0.3);
+}
+
+.l3-potential-medium {
+    background: rgba(241, 196, 15, 0.15);
+    color: #F1C40F;
+    border: 1px solid rgba(241, 196, 15, 0.3);
+}
+
+.l3-potential-low {
+    background: rgba(192, 57, 43, 0.15);
+    color: #C0392B;
+    border: 1px solid rgba(192, 57, 43, 0.3);
+}
+
+.l3-card-divider {
+    height: 1px;
+    background: #1e3355;
+    margin: 2px 0 8px;
+}
+
+.l3-card-usecases-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #556888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+}
+
+.l3-card-usecases {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.l3-card-uc-item {
+    display: flex;
+    gap: 7px;
+    align-items: flex-start;
+}
+
+.l3-card-uc-arrow {
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.l3-card-uc-text {
+    font-size: 12px;
+    color: #8899BB;
+    line-height: 1.4;
+}
+
+.l3-card-score-label {
+    font-size: 10px;
+    color: #556888;
+}
+
+.l3-card-score-val {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.l3-card-hint {
+    font-size: 10px;
+    color: #556888;
+}

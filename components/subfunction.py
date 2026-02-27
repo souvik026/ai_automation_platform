@@ -1,6 +1,6 @@
 from dash import html, dcc, Input, Output, State, callback, no_update, ctx
 import plotly.graph_objects as go
-from urllib.parse import parse_qs
+from urllib.parse import parse_qs, quote
 
 from utils.data_loader import DataLoader
 from utils.calculations import AutomationCalculator
@@ -199,33 +199,38 @@ def switch_sf_tab(sum_clicks, ai_clicks, search):
 
 
 @callback(
-    Output("sf-tab-content", "children", allow_duplicate=True),
-    Output("sf-active-tab", "data", allow_duplicate=True),
+    Output("sf-redirect", "href", allow_duplicate=True),
     Input("subfunction-treemap", "clickData"),
     State("subfunction-url", "search"),
-    State("sf-active-tab", "data"),
     prevent_initial_call=True,
 )
-def on_subfunction_click(click_data, search, active_tab):
-    """When user clicks an L2 box, show ONLY that SF's detail in Summary tab."""
+def on_subfunction_click(click_data, search):
+    """When user clicks an L2 box, navigate to L3 breakdown page."""
     if not click_data:
-        return no_update, no_update
+        return no_update
 
     point = click_data["points"][0]
     customdata = point.get("customdata", [])
+
     if len(customdata) < 5 or not customdata[4]:
-        return no_update, no_update
+        return no_update
 
     sf_id = customdata[4]
     function_id, company, industry, revenue_m = _parse_params(search)
 
     function = DataLoader.get_function(industry, function_id, revenue_m=revenue_m)
     if not function:
-        return no_update, no_update
+        return no_update
 
-    selected_sf = DataLoader.get_subfunction(industry, function_id, sf_id, revenue_m=revenue_m)
-    if not selected_sf:
-        return no_update, no_update
+    sf = DataLoader.get_subfunction(industry, function_id, sf_id, revenue_m=revenue_m)
+    if not sf:
+        return no_update
 
-    # Always switch to summary tab and show SF detail
-    return Insights.build_l2_summary(function, selected_sf=selected_sf), "summary"
+    l2_name = quote(sf["name"])
+    l1_name = quote(function["name"])
+    url = (f"/l3breakdown?function_id={function_id}"
+           f"&l2_name={l2_name}&l1_name={l1_name}"
+           f"&company={quote(company)}&industry={industry}")
+    if revenue_m:
+        url += f"&revenue={revenue_m}"
+    return url

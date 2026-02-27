@@ -1,11 +1,13 @@
 import dash
 from dash import dcc, html, Input, Output
 
-# Import page layouts (registers their callbacks automatically)
 from components.landing import landing_layout
 from components.treemap import treemap_layout
 from components.subfunction import subfunction_layout
 from components.chatbot import chatbot_layout
+from components.l2_overview import l2_overview_layout
+from components.l3_breakdown import l3_breakdown_layout
+import components.ask_ai  # registers ask_ai callbacks
 
 app = dash.Dash(
     __name__,
@@ -34,6 +36,10 @@ def display_page(pathname):
         return subfunction_layout()
     if pathname == "/chatbot":
         return chatbot_layout()
+    if pathname == "/l2overview":
+        return l2_overview_layout()
+    if pathname == "/l3breakdown":
+        return l3_breakdown_layout()
     return landing_layout()
 
 

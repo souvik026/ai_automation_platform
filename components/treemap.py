@@ -85,6 +85,14 @@ def treemap_layout():
                             html.H2(id="treemap-page-title", className="page-title"),
                         ]),
                     ]),
+                    html.Div(className="header-right", children=[
+                        html.Button(
+                            children=["⊞ View All Subfunctions"],
+                            id="treemap-l2overview-btn",
+                            className="ai-button",
+                            n_clicks=0,
+                        ),
+                    ]),
                 ]
             ),
 
@@ -190,3 +198,19 @@ def on_treemap_click(click_data, search):
             url += f"&revenue={revenue_m}"
         return url
     return None
+
+
+@callback(
+    Output("treemap-redirect", "href", allow_duplicate=True),
+    Input("treemap-l2overview-btn", "n_clicks"),
+    State("treemap-url", "search"),
+    prevent_initial_call=True,
+)
+def go_to_l2_overview(n_clicks, search):
+    if not n_clicks:
+        return no_update
+    company, industry, revenue_m = _parse_params(search)
+    url = f"/l2overview?company={company.replace(' ', '+')}&industry={industry}"
+    if revenue_m:
+        url += f"&revenue={revenue_m}"
+    return url

@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+from utils.color_mapper import ColorMapper
 
 
 class DataLoader:
@@ -104,21 +105,30 @@ class DataLoader:
                 "subfunctions": subfunctions,
             })
 
+        # Calibrate color thresholds for this industry using all automation scores
+        all_scores = [
+            sf["automation_score"]
+            for f in functions
+            for sf in f["subfunctions"]
+        ]
+        ColorMapper.calibrate(all_scores, industry_key=industry.lower())
+        ColorMapper.set_active_industry(industry.lower())
+
         result = {"industry": industry, "functions": functions, "revenue_m": revenue_m}
         cls._cache[cache_key] = result
         return result
 
     @classmethod
-    def get_function(cls, industry: str, function_id: str, revenue_m: float = None) -> dict:
-        data = cls.load_industry(industry, revenue_m=revenue_m)
+    def get_function(cls, industry: str, function_id: str) -> dict:
+        data = cls.load_industry(industry)
         return next(
             (f for f in data["functions"] if f["id"] == function_id),
             None
         )
 
     @classmethod
-    def get_subfunction(cls, industry: str, function_id: str, subfunction_id: str, revenue_m: float = None) -> dict:
-        function = cls.get_function(industry, function_id, revenue_m=revenue_m)
+    def get_subfunction(cls, industry: str, function_id: str, subfunction_id: str) -> dict:
+        function = cls.get_function(industry, function_id)
         if not function:
             return None
         return next(

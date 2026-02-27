@@ -4,38 +4,33 @@ from utils.color_mapper import ColorMapper
 
 
 class Insights:
-    @staticmethod
-    def build_score_bar_chart(items: list, name_key: str = "name", score_key: str = "automation_score", is_func: bool = False) -> go.Figure:
-        if is_func:
-            names = [f["name"] for f in items]
-            scores = []
-            colors = []
-            for f in items:
-                sfs = f["subfunctions"]
-                avg = sum(sf["automation_score"] for sf in sfs) / len(sfs) if sfs else 0
-                scores.append(round(avg, 2))
-                colors.append(ColorMapper.get_color(avg))
-        else:
-            names = [i[name_key] for i in items]
-            scores = [round(i[score_key], 2) for i in items]
-            colors = [ColorMapper.get_color(s) for s in scores]
 
-        fig = go.Figure(go.Bar(
-            x=scores, y=names, orientation="h",
-            marker=dict(color=colors, line=dict(width=0)),
-            text=[f"{s:.2f}" for s in scores],
-            textposition="outside",
-            textfont=dict(color="#8899BB", size=11, family="DM Sans"),
-            hovertemplate="<b>%{y}</b><br>Score: %{x:.2f}/5<extra></extra>",
+    @staticmethod
+    def build_pie_chart(labels: list, values: list, colors: list, title: str = "") -> go.Figure:
+        fig = go.Figure(go.Pie(
+            labels=labels,
+            values=values,
+            marker=dict(colors=colors, line=dict(color="#0A1628", width=2)),
+            textinfo="percent",
+            textfont=dict(size=11, color="white", family="DM Sans"),
+            hovertemplate="<b>%{label}</b><br>Cost: %{value:.2f}%<br>Share: %{percent}<extra></extra>",
+            hole=0.45,
+            sort=False,
         ))
         fig.update_layout(
-            margin=dict(t=8, b=8, l=8, r=32),
-            paper_bgcolor="#111f38", plot_bgcolor="#111f38",
+            margin=dict(t=8, b=8, l=8, r=8),
+            paper_bgcolor="#111f38",
+            plot_bgcolor="#111f38",
             font=dict(family="DM Sans", color="#8899BB", size=11),
-            xaxis=dict(range=[0, 5.5], showgrid=True, gridcolor="#1e3355", zeroline=False, tickfont=dict(color="#556888", size=10)),
-            yaxis=dict(showgrid=False, tickfont=dict(color="#F0F4FF", size=11), automargin=True),
-            height=max(160, len(items) * 42),
-            bargap=0.35,
+            showlegend=True,
+            legend=dict(
+                font=dict(size=10, color="#8899BB"),
+                bgcolor="rgba(0,0,0,0)",
+                orientation="v",
+                x=1.0, y=0.5,
+                xanchor="left",
+            ),
+            height=200,
         )
         return fig
 
@@ -91,8 +86,13 @@ class Insights:
         top = max(func_stats, key=lambda x: x["score"])
         bottom = min(func_stats, key=lambda x: x["score"])
         overall_avg = round(sum(s["score"] for s in func_stats) / len(func_stats), 2)
-        total_cost = round(sum(s["cost"] for s in func_stats), 1)
+        total_cost_sum = round(sum(s["cost"] for s in func_stats), 1)
         opportunities = sorted(func_stats, key=lambda x: x["score"], reverse=True)[:3]
+
+        # Pie: cost breakdown by function
+        pie_labels = [s["name"] for s in func_stats]
+        pie_values = [s["cost"] for s in func_stats]
+        pie_colors = [ColorMapper.get_color(s["score"]) for s in func_stats]
 
         return html.Div(className="insights-content", children=[
             html.Div(className="insights-section-header", children=[
@@ -101,7 +101,7 @@ class Insights:
             ]),
             html.Div(className="insight-callouts", children=[
                 cls._callout_card("Avg Score", f"{overall_avg}/5", "across all functions", "#00C9A7"),
-                cls._callout_card("Total Cost", f"{total_cost}%", "of revenue", "#0066FF"),
+                cls._callout_card("Total Cost", f"{total_cost_sum}%", "of revenue", "#0066FF"),
             ]),
             html.Div(className="insights-section-header", style={"marginTop": "16px"}, children=[
                 html.Span("Highest & Lowest Potential", className="insights-section-title")
@@ -111,10 +111,10 @@ class Insights:
                 cls._callout_card("Lowest", bottom["name"], f"Score: {bottom['score']}/5", "#C0392B"),
             ]),
             html.Div(className="insights-section-header", style={"marginTop": "16px"}, children=[
-                html.Span("Score by Function", className="insights-section-title")
+                html.Span("Cost Breakdown by Function", className="insights-section-title")
             ]),
             dcc.Graph(
-                figure=cls.build_score_bar_chart(functions, is_func=True),
+                figure=cls.build_pie_chart(pie_labels, pie_values, pie_colors),
                 config={"displayModeBar": False, "responsive": True},
                 className="insights-chart",
             ),
@@ -130,19 +130,32 @@ class Insights:
 
     @classmethod
     def build_l2_summary(cls, function: dict, selected_sf: dict = None) -> html.Div:
+        """
+        If selected_sf is provided, show ONLY that subfunction's detail.
+        Otherwise show the full function overview.
+        """
         subfunctions = function["subfunctions"]
         has_revenue = bool(subfunctions and subfunctions[0].get("absolute_cost_m") is not None)
 
         if not subfunctions:
             return html.Div("No subfunctions available.", className="insight-empty")
 
+        # If a subfunction is clicked, show its detail view only
+        if selected_sf:
+            return cls._build_sf_detail(function, selected_sf, has_revenue)
+
+        # Default: full function overview
         avg_score = round(sum(sf["automation_score"] for sf in subfunctions) / len(subfunctions), 2)
         top_sf = max(subfunctions, key=lambda x: x["automation_score"])
         bottom_sf = min(subfunctions, key=lambda x: x["automation_score"])
         total_cost = round(sum(sf["cost_pct_revenue"] for sf in subfunctions), 2)
         opportunities = sorted(subfunctions, key=lambda x: x["automation_score"], reverse=True)[:3]
 
-        children = [
+        pie_labels = [sf["name"] for sf in subfunctions]
+        pie_values = [sf["cost_pct_revenue"] for sf in subfunctions]
+        pie_colors = [ColorMapper.get_color(sf["automation_score"]) for sf in subfunctions]
+
+        return html.Div(className="insights-content", children=[
             html.Div(className="insights-section-header", children=[
                 html.Span(function["name"], className="insights-section-title"),
                 html.Span(f"{len(subfunctions)} subfunctions", className="insights-section-badge"),
@@ -159,10 +172,10 @@ class Insights:
                 cls._callout_card("Lowest", bottom_sf["name"], f"Score: {bottom_sf['automation_score']}/5", "#C0392B"),
             ]),
             html.Div(className="insights-section-header", style={"marginTop": "16px"}, children=[
-                html.Span("Score by Subfunction", className="insights-section-title")
+                html.Span("Cost Breakdown", className="insights-section-title")
             ]),
             dcc.Graph(
-                figure=cls.build_score_bar_chart(subfunctions),
+                figure=cls.build_pie_chart(pie_labels, pie_values, pie_colors),
                 config={"displayModeBar": False, "responsive": True},
                 className="insights-chart",
             ),
@@ -173,48 +186,174 @@ class Insights:
                 cls._opportunity_item(i+1, sf["name"], sf["automation_score"], sf["cost_pct_revenue"], has_revenue, sf.get("absolute_cost_m"))
                 for i, sf in enumerate(opportunities)
             ]),
-        ]
+            html.Div("Click any subfunction for detailed insights", className="insights-footnote"),
+        ])
 
-        if selected_sf:
-            color = ColorMapper.get_color(selected_sf["automation_score"])
-            children += [
-                html.Div(className="insights-divider"),
-                html.Div(className="insights-section-header", children=[
-                    html.Span(f"Selected: {selected_sf['name']}", className="insights-section-title")
+    @classmethod
+    def _build_sf_detail(cls, function: dict, sf: dict, has_revenue: bool) -> html.Div:
+        """Focused detail view for a single selected subfunction."""
+        color = ColorMapper.get_color(sf["automation_score"])
+        score_pct = (sf["automation_score"] / 5) * 100
+
+        return html.Div(className="insights-content", children=[
+            # Back hint
+            html.Div(className="sf-detail-back-hint", children=[
+                html.Span("← ", style={"color": "#556888"}),
+                html.Span(function["name"], style={"color": "#556888", "fontSize": "11px"}),
+            ]),
+
+            # SF name + badge
+            html.Div(className="insights-section-header", children=[
+                html.Span(sf["name"], className="insights-section-title"),
+                html.Span(
+                    ColorMapper.get_label(sf["automation_score"]),
+                    className="insights-section-badge",
+                    style={"backgroundColor": color, "color": "white", "borderColor": color}
+                ),
+            ]),
+
+            # Score display
+            html.Div(className="sf-score-display", children=[
+                html.Div(className="sf-score-circle", style={"borderColor": color}, children=[
+                    html.Span(f"{sf['automation_score']:.1f}", className="sf-score-big", style={"color": color}),
+                    html.Span("/5", className="sf-score-denom"),
                 ]),
-                html.Div(className="sf-detail-block", children=[
-                    html.Div(className="sf-detail-score-row", children=[
-                        html.Span("Automation Score", className="sf-detail-label"),
-                        html.Span(f"{selected_sf['automation_score']:.1f}/5", className="sf-detail-score", style={"color": color}),
-                    ]),
+                html.Div(className="sf-score-bar-col", children=[
+                    html.Div("Automation Score", className="sf-detail-label"),
                     html.Div(className="score-bar-track", children=[
                         html.Div(className="score-bar-fill", style={
-                            "width": f"{(selected_sf['automation_score'] / 5) * 100:.0f}%",
+                            "width": f"{score_pct:.0f}%",
                             "backgroundColor": color
                         })
                     ]),
-                    html.Div(className="sf-detail-metrics", children=[
-                        html.Div([
-                            html.Span(f"{selected_sf['cost_pct_revenue']:.2f}%", className="metric-value"),
-                            html.Span("% of Revenue", className="metric-label"),
-                        ], className="metric-card"),
-                        html.Div([
-                            html.Span(
-                                f"${selected_sf['absolute_cost_m']:.1f}M" if selected_sf.get("absolute_cost_m") else "N/A",
-                                className="metric-value"
-                            ),
-                            html.Span("Absolute Cost", className="metric-label"),
-                        ], className="metric-card"),
-                    ]),
-                    html.Div(className="sf-detail-opportunities", children=[
-                        html.H4("Top AI Opportunities", className="section-title"),
-                        html.Div("◆ AI-powered process automation & workflow orchestration", className="use-case-item"),
-                        html.Div("◆ Intelligent document processing & data extraction", className="use-case-item"),
-                        html.Div("◆ Predictive analytics & anomaly detection", className="use-case-item"),
-                        html.P("Connect LLM for dynamic, function-specific use cases.", className="panel-footnote"),
-                    ]),
+                    html.Div(f"{score_pct:.0f}% of max potential", className="callout-sub"),
                 ]),
-            ]
+            ]),
 
-        children.append(html.Div("Template summary — connect LLM for dynamic insights", className="insights-footnote"))
-        return html.Div(className="insights-content", children=children)
+            # Cost metrics
+            html.Div(className="insight-callouts", style={"marginTop": "12px"}, children=[
+                cls._callout_card("% of Revenue", f"{sf['cost_pct_revenue']:.2f}%", "cost exposure", "#0066FF"),
+                cls._callout_card(
+                    "Absolute Cost",
+                    f"${sf['absolute_cost_m']:.1f}M" if sf.get("absolute_cost_m") else "N/A",
+                    "estimated cost" if sf.get("absolute_cost_m") else "enter revenue",
+                    "#00C9A7"
+                ),
+            ]),
+
+            # Role description
+            html.Div(className="insights-section-header", style={"marginTop": "16px"}, children=[
+                html.Span("Function Description", className="insights-section-title")
+            ]),
+            html.Div(
+                sf.get("role_description", "No description available."),
+                className="sf-role-description"
+            ),
+
+            # AI Opportunities
+            html.Div(className="insights-section-header", style={"marginTop": "16px"}, children=[
+                html.Span("Top AI Opportunities", className="insights-section-title")
+            ]),
+            html.Div(className="sf-detail-opportunities", children=[
+                html.Div("◆ AI-powered process automation & workflow orchestration", className="use-case-item"),
+                html.Div("◆ Intelligent document processing & data extraction", className="use-case-item"),
+                html.Div("◆ Predictive analytics & anomaly detection", className="use-case-item"),
+            ]),
+            html.P("Connect LLM for dynamic, function-specific use cases.", className="insights-footnote"),
+        ])
+
+    @classmethod
+    def build_l2_overview_summary(cls, industry_data: dict) -> html.Div:
+        """Summary for the all-L2 overview page. No pie chart. Top subfunctions list."""
+        functions = industry_data["functions"]
+        revenue_m = industry_data.get("revenue_m")
+        has_revenue = revenue_m is not None
+
+        # Flatten all subfunctions
+        all_sfs = []
+        for func in functions:
+            for sf in func["subfunctions"]:
+                all_sfs.append({
+                    "name": sf["name"],
+                    "l1": func["name"],
+                    "score": sf["automation_score"],
+                    "cost": sf["cost_pct_revenue"],
+                    "abs_cost": sf.get("absolute_cost_m"),
+                })
+
+        if not all_sfs:
+            return html.Div("No data available.", className="insight-empty")
+
+        total_sfs = len(all_sfs)
+        overall_avg = round(sum(s["score"] for s in all_sfs) / total_sfs, 2)
+        total_cost = round(sum(s["cost"] for s in all_sfs), 1)
+        top = max(all_sfs, key=lambda x: x["score"])
+        bottom = min(all_sfs, key=lambda x: x["score"])
+
+        # Top 5 by score
+        top5 = sorted(all_sfs, key=lambda x: x["score"], reverse=True)[:5]
+        # Bottom 5 by score
+        bottom5 = sorted(all_sfs, key=lambda x: x["score"])[:5]
+
+        def sf_row(rank, sf, show_rank=True):
+            color = ColorMapper.get_color(sf["score"])
+            cost_str = f"${sf['abs_cost']:.1f}M" if has_revenue and sf.get("abs_cost") else f"{sf['cost']:.1f}%"
+            return html.Div(
+                className="opportunity-item",
+                children=[
+                    html.Span(f"{rank}", className="opp-rank") if show_rank else None,
+                    html.Div(className="opp-details", children=[
+                        html.Div(sf["name"], className="opp-name"),
+                        html.Div(sf["l1"], className="opp-cost", style={"color": "#556888"}),
+                    ]),
+                    html.Div(
+                        children=[
+                            html.Div(f"{sf['score']:.1f}", className="opp-score-badge", style={"backgroundColor": color}),
+                            html.Div(cost_str, className="opp-cost", style={"textAlign": "right", "marginTop": "2px"}),
+                        ]
+                    ),
+                ]
+            )
+
+        return html.Div(className="insights-content", children=[
+            # Header
+            html.Div(className="insights-section-header", children=[
+                html.Span("All Subfunctions", className="insights-section-title"),
+                html.Span(f"{total_sfs} total", className="insights-section-badge"),
+            ]),
+
+            # Callouts
+            html.Div(className="insight-callouts", children=[
+                cls._callout_card("Avg Score", f"{overall_avg}/5", f"across {total_sfs} subfunctions", "#00C9A7"),
+                cls._callout_card("Total Cost", f"{total_cost}%", "of revenue", "#0066FF"),
+            ]),
+
+            # Highest / Lowest
+            html.Div(className="insights-section-header", style={"marginTop": "16px"}, children=[
+                html.Span("Highest & Lowest", className="insights-section-title")
+            ]),
+            html.Div(className="insight-callouts", children=[
+                cls._callout_card("Highest", top["name"], f"{top['l1']} · {top['score']}/5", "#27AE60"),
+                cls._callout_card("Lowest", bottom["name"], f"{bottom['l1']} · {bottom['score']}/5", "#C0392B"),
+            ]),
+
+            # Top 5 subfunctions
+            html.Div(className="insights-section-header", style={"marginTop": "16px"}, children=[
+                html.Span("Top 5 Subfunctions", className="insights-section-title"),
+                html.Span("by score", className="insights-section-badge"),
+            ]),
+            html.Div(className="opportunities-list", children=[
+                sf_row(i+1, sf) for i, sf in enumerate(top5)
+            ]),
+
+            # Bottom 5
+            html.Div(className="insights-section-header", style={"marginTop": "16px"}, children=[
+                html.Span("Lowest 5 Subfunctions", className="insights-section-title"),
+                html.Span("by score", className="insights-section-badge"),
+            ]),
+            html.Div(className="opportunities-list", children=[
+                sf_row(i+1, sf) for i, sf in enumerate(bottom5)
+            ]),
+
+            html.Div("Template summary — connect LLM for dynamic insights", className="insights-footnote"),
+        ])
